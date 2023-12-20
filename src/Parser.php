@@ -31,8 +31,8 @@ readonly class Parser
     {
         try {
             $user = $this->sdk->auth->user->create(
-                email: $userEmail = ($inputContract->userEmail ?? Uuid::v4()->__toString() . '@demo.com'),
-                password: $userPassword = ($inputContract->userPassword ?? md5(random_bytes(255))),
+                email: $userEmail = ($command->userEmail ?? Uuid::v4()->__toString() . '@demo.com'),
+                password: $userPassword = ($command->userPassword ?? md5(random_bytes(255))),
                 name: $userEmail,
             );
         } catch (Throwable $throwable) {
@@ -57,7 +57,7 @@ readonly class Parser
         try {
             $project = $this->sdk->project->project->create(
                 userId: (int) $user['id'],
-                name: $inputContract->projectName ?? throw new Exception('Project name was not set'),
+                name: $command->projectName ?? throw new Exception('Project name was not set'),
                 accessJwt: $accessJwt,
             );
         } catch (Throwable $throwable) {
@@ -74,7 +74,7 @@ readonly class Parser
         try {
             $domainModel = $this->sdk->project->domainModel->create(
                 projectId: $project['id'],
-                name: $inputContract->domainModelName ?? throw new Exception('DomainModel name was not set'),
+                name: $command->domainModelName ?? throw new Exception('DomainModel name was not set'),
                 accessJwt: $accessJwt,
             );
         } catch (Throwable $throwable) {
@@ -122,7 +122,7 @@ readonly class Parser
             try {
                 $baseBoundedContext = $this->sdk->project->boundedContext->create(
                     domainModelId: $domainModel['id'],
-                    name: $inputContract->baseBoundedContextName ?? $inputContract->domainModelName,
+                    name: $command->baseBoundedContextName ?? $command->domainModelName,
                     accessJwt: $accessJwt,
                 );
             } catch (Throwable $throwable) {
@@ -164,7 +164,7 @@ readonly class Parser
 
             $entity = $this->sdk->project->entity->create(
                 boundedContextId: $contexts[$entityByContextHashMap[$metadata->getName()]]['boundedContext']['id'] ?? $baseBoundedContext['id'] ?? throw new Exception('BoundedContext not created'),
-                identificationType: $inputContract->entityIdentificationType,
+                identificationType: $command->entityIdentificationType,
                 name: $entityName,
                 accessJwt: $accessJwt,
             );
@@ -174,7 +174,7 @@ readonly class Parser
 
             $this->sdk->project->entityAttribute->createId(
                 entityId: $entity['id'],
-                identificationType: $inputContract->entityIdentificationType,
+                identificationType: $command->entityIdentificationType,
                 accessJwt: $accessJwt,
             );
 
