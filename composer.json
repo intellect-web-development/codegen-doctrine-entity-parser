@@ -11,5 +11,8 @@
             "name": "alexander-erin"
         }
     ],
-    "require": {}
+    "require": {
+        "symfony/serializer": "^7.0",
+        "guzzlehttp/guzzle": "^7.8"
+    }
 }
