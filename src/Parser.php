@@ -166,7 +166,7 @@ class Parser
             ));
         }
 
-        $io->info('Next start create entities');
+        $io->success('Next start create entities');
 
         foreach ($allMetadata as $key => $metadata) {
             $entityIteration = $key + 1;
@@ -187,8 +187,8 @@ class Parser
             $this->sdk->project->entityAttribute->createId(
                 $entity['id'],
                 $command->entityIdentificationType,
-                null,
-                null,
+                'id',
+                'Entity ID',
                 null,
                 $accessJwt
             );
@@ -198,11 +198,11 @@ class Parser
                     continue;
                 }
                 if ('createdAt' === $fieldMapping['fieldName']) {
-                    $this->sdk->project->entityAttribute->createCreatedAt($entity['id'], null, null, null, $accessJwt);
+                    $this->sdk->project->entityAttribute->createCreatedAt($entity['id'], 'createdAt', 'Entity created at', null, $accessJwt);
                     continue;
                 }
                 if ('updatedAt' === $fieldMapping['fieldName']) {
-                    $this->sdk->project->entityAttribute->createUpdatedAt($entity['id'], null, null, null, $accessJwt);
+                    $this->sdk->project->entityAttribute->createUpdatedAt($entity['id'], 'updatedAt', 'Entity updated at', null, $accessJwt);
                     continue;
                 }
 
