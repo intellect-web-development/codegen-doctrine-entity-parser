@@ -110,19 +110,19 @@ class Parser
             // Получение полного идентификатора сущности
             $entityName = $item->getName();
 
-            // Разделение по разделителю
+            // Разделение по префиксам
             $parts = explode('\\', $entityName);
 
-            // Удаление "шума" - префиксов из идентификатора сущности
-            $limitedContexts = $this->removePrefixes($parts);
+            // Игнорирование префиксов
+            while (count($parts) > 2 && in_array($parts[0], $command->ignorePrefixes)) {
+                array_shift($parts);
+            }
 
-            // Определение ограниченного контекста
-            $context = reset($limitedContexts);
+            // Получение ограниченного контекста
+            $context = $parts[0];
 
             // Разложение сущностей по ограниченным контекстам
-            $contexts[$context]['boundedContext'] = null;
-            $contexts[$context]['entityNames'][] = $entityName;
-            $entityByContextHashMap[$entityName] = $context;
+            $contexts[$context][] = $entityName;
         }
 
         $baseBoundedContext = null;
