@@ -4,49 +4,50 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Project\EntityRelation;
 
-use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\Cardinality;
-use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\Orientation;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
 
-readonly class EntityRelationNode
+class EntityRelationNode
 {
+    private $client;
+
     public function __construct(
-        private HttpSdkClient $client,
+        HttpSdkClient $client
     ) {
+        $this->client = $client;
     }
 
     public function create(
-        Orientation $orientation,
+        string $orientation,
         ?string $description,
         string $ownerEntityId,
-        Cardinality $ownerSideCardinality,
+        string $ownerSideCardinality,
         bool $ownerSideRequired,
         bool $ownerSideOrphanRemoval,
         string $inverseEntityId,
-        Cardinality $inverseSideCardinality,
+        string $inverseSideCardinality,
         bool $inverseSideRequired,
         bool $inverseSideOrphanRemoval,
         ?string $ownerSideName = null,
         ?string $inverseSideName = null,
-        string $accessJwt = null,
+        string $accessJwt = null
     ): array {
         return $this->client->post(
-            uri: '/api/admin/project/entity-relations/create',
-            body: [
+            '/api/admin/project/entity-relations/create',
+            [
                 'ownerEntityId' => $ownerEntityId,
                 'inverseEntityId' => $inverseEntityId,
                 'description' => $description,
                 'inverseSideName' => $inverseSideName,
                 'inverseSideOrphanRemoval' => $inverseSideOrphanRemoval,
                 'inverseSideRequired' => $inverseSideRequired,
-                'orientation' => $orientation->value,
-                'ownerSideCardinality' => $ownerSideCardinality->value,
-                'inverseSideCardinality' => $inverseSideCardinality->value,
+                'orientation' => $orientation,
+                'ownerSideCardinality' => $ownerSideCardinality,
+                'inverseSideCardinality' => $inverseSideCardinality,
                 'ownerSideName' => $ownerSideName,
                 'ownerSideOrphanRemoval' => $ownerSideOrphanRemoval,
                 'ownerSideRequired' => $ownerSideRequired,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );

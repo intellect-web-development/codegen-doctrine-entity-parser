@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\Enum;
 
-enum Orientation: string
+class Orientation
 {
-    case Bidirectional = 'bidirectional';
-    case Unidirectional = 'unidirectional';
+    public const Bidirectional = 'bidirectional';
+    public const Unidirectional = 'unidirectional';
 }

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\VO;
 
-readonly class DefaultValue
+class DefaultValue
 {
-    private bool $exists;
-    private ?string $value;
+    private $exists;
+    private $value;
 
     public static function notExists(): self
     {

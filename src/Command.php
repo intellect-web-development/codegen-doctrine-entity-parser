@@ -6,15 +6,28 @@ namespace IWD\CodeGen\CodegenDoctrineEntityParser;
 
 use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\IdentificationType;
 
-readonly class Command
+class Command
 {
+    public $projectName;
+    public $domainModelName;
+    public $entityIdentificationType;
+    public $baseBoundedContextName = null;
+    public $userEmail = null;
+    public $userPassword = null;
+
     public function __construct(
-        public string $projectName,
-        public string $domainModelName,
-        public IdentificationType $entityIdentificationType,
-        public ?string $baseBoundedContextName = null,
-        public ?string $userEmail = null,
-        public ?string $userPassword = null,
+        string $projectName,
+        string $domainModelName,
+        IdentificationType $entityIdentificationType,
+        ?string $baseBoundedContextName = null,
+        ?string $userEmail = null,
+        ?string $userPassword = null
     ) {
+        $this->userPassword = $userPassword;
+        $this->userEmail = $userEmail;
+        $this->baseBoundedContextName = $baseBoundedContextName;
+        $this->entityIdentificationType = $entityIdentificationType;
+        $this->domainModelName = $domainModelName;
+        $this->projectName = $projectName;
     }
 }

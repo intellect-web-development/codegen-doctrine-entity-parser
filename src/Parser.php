@@ -16,24 +16,29 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Uid\Uuid;
 use Throwable;
 
-readonly class Parser
+class Parser
 {
     public const SUCCESS = 0;
     public const FAILURE = 1;
 
+    private $em;
+    private $sdk;
+
     public function __construct(
-        private EntityManagerInterface $em,
-        private CodeGenSdk $sdk,
+        EntityManagerInterface $em,
+        CodeGenSdk $sdk
     ) {
+        $this->sdk = $sdk;
+        $this->em = $em;
     }
 
     public function process(Command $command, SymfonyStyle $io): int
     {
         try {
             $user = $this->sdk->auth->user->create(
-                email: $userEmail = ($command->userEmail ?? Uuid::v4()->__toString() . '@demo.com'),
-                password: $userPassword = ($command->userPassword ?? md5(random_bytes(255))),
-                name: $userEmail,
+                $userEmail = ($command->userEmail ?? Uuid::v4()->__toString() . '@demo.com'),
+                $userPassword = ($command->userPassword ?? md5(random_bytes(255))),
+                $userEmail
             );
         } catch (Throwable $throwable) {
             $io->error('Create user is fail, reason: ' . $throwable->getMessage());
@@ -43,8 +48,8 @@ readonly class Parser
 
         try {
             $jwt = $this->sdk->auth->user->getJwt(
-                email: $userEmail,
-                password: $userPassword,
+                $userEmail,
+                $userPassword
             );
         } catch (Throwable $throwable) {
             $io->error('Can not get JWT token: ' . $throwable->getMessage());
@@ -56,9 +61,9 @@ readonly class Parser
 
         try {
             $project = $this->sdk->project->project->create(
-                userId: (int) $user['id'],
-                name: $command->projectName ?? throw new Exception('Project name was not set'),
-                accessJwt: $accessJwt,
+                (int) $user['id'],
+                $command->projectName,
+                $accessJwt
             );
         } catch (Throwable $throwable) {
             $io->error('Create project is fail, reason: ' . $throwable->getMessage());
@@ -68,14 +73,14 @@ readonly class Parser
         $io->success(sprintf(
             'Project #%s "%s" was created',
             $project['id'],
-            $project['name'],
+            $project['name']
         ));
 
         try {
             $domainModel = $this->sdk->project->domainModel->create(
-                projectId: $project['id'],
-                name: $command->domainModelName ?? throw new Exception('DomainModel name was not set'),
-                accessJwt: $accessJwt,
+                $project['id'],
+                $command->domainModelName,
+                $accessJwt
             );
         } catch (Throwable $throwable) {
             $io->error('Create DomainModel is fail, reason: ' . $throwable->getMessage());
@@ -85,7 +90,7 @@ readonly class Parser
         $io->success(sprintf(
             'DomainModel #%s "%s" was created',
             $domainModel['id'],
-            $domainModel['name'],
+            $domainModel['name']
         ));
 
         $metadataHashMapByEntityId = [];
@@ -121,9 +126,9 @@ readonly class Parser
         if (empty($contexts)) {
             try {
                 $baseBoundedContext = $this->sdk->project->boundedContext->create(
-                    domainModelId: $domainModel['id'],
-                    name: $command->baseBoundedContextName ?? $command->domainModelName,
-                    accessJwt: $accessJwt,
+                    $domainModel['id'],
+                    $command->baseBoundedContextName ?? $command->domainModelName,
+                    $accessJwt
                 );
             } catch (Throwable $throwable) {
                 $io->error('Create BoundedContext is fail, reason: ' . $throwable->getMessage());
@@ -133,15 +138,15 @@ readonly class Parser
             $io->success(sprintf(
                 'BoundedContext #%s "%s" was created',
                 $baseBoundedContext['id'],
-                $baseBoundedContext['name'],
+                $baseBoundedContext['name']
             ));
         }
         foreach ($contexts as $contextName => $entityNames) {
             try {
                 $boundedContext = $this->sdk->project->boundedContext->create(
-                    domainModelId: $domainModel['id'],
-                    name: (string) $contextName,
-                    accessJwt: $accessJwt,
+                    $domainModel['id'],
+                    (string) $contextName,
+                    $accessJwt
                 );
                 $contexts[$contextName]['boundedContext'] = $boundedContext;
             } catch (Throwable $throwable) {
@@ -152,7 +157,7 @@ readonly class Parser
             $io->success(sprintf(
                 'BoundedContext #%s "%s" was created',
                 $boundedContext['id'],
-                $boundedContext['name'],
+                $boundedContext['name']
             ));
         }
 
@@ -163,19 +168,19 @@ readonly class Parser
             $entityName = $this->parseEntityNameFromClassMetadata($metadata);
 
             $entity = $this->sdk->project->entity->create(
-                boundedContextId: $contexts[$entityByContextHashMap[$metadata->getName()]]['boundedContext']['id'] ?? $baseBoundedContext['id'] ?? throw new Exception('BoundedContext not created'),
-                identificationType: $command->entityIdentificationType,
-                name: $entityName,
-                accessJwt: $accessJwt,
+                $contexts[$entityByContextHashMap[$metadata->getName()]]['boundedContext']['id'] ?? $baseBoundedContext['id'],
+                $command->entityIdentificationType,
+                $entityName,
+                $accessJwt
             );
             $entitiesHashMapByNamespace[$metadata->getName()] = $entity;
             $metadataHashMapByEntityId[$entity['id']] = $metadata;
             $entitiesHashMapByEntityId[$entity['id']] = $entity;
 
             $this->sdk->project->entityAttribute->createId(
-                entityId: $entity['id'],
-                identificationType: $command->entityIdentificationType,
-                accessJwt: $accessJwt,
+                $entity['id'],
+                $command->entityIdentificationType,
+                $accessJwt
             );
 
             foreach ($metadata->fieldMappings as $fieldMapping) {
@@ -183,11 +188,11 @@ readonly class Parser
                     continue;
                 }
                 if ('createdAt' === $fieldMapping['fieldName']) {
-                    $this->sdk->project->entityAttribute->createCreatedAt(entityId: $entity['id'], accessJwt: $accessJwt);
+                    $this->sdk->project->entityAttribute->createCreatedAt($entity['id'], $accessJwt);
                     continue;
                 }
                 if ('updatedAt' === $fieldMapping['fieldName']) {
-                    $this->sdk->project->entityAttribute->createUpdatedAt(entityId: $entity['id'], accessJwt: $accessJwt);
+                    $this->sdk->project->entityAttribute->createUpdatedAt($entity['id'], $accessJwt);
                     continue;
                 }
 
@@ -211,24 +216,30 @@ readonly class Parser
                 }
 
                 $this->sdk->project->entityAttribute->create(
-                    entityId: $entity['id'],
-                    name: Inflector::camelize(str_replace('.', '_', $fieldMapping['fieldName'])),
-                    nullable: (bool) ($fieldMapping['nullable'] ?? true),
-                    unique: (bool) ($fieldMapping['unique'] ?? false),
-                    specialAppointment: $specialAppointment,
-                    tableAttributeType: $tableAttributeType,
-                    accessJwt: $accessJwt,
+                    $entity['id'],
+                    Inflector::camelize(str_replace('.', '_', $fieldMapping['fieldName'])),
+                    (bool) ($fieldMapping['nullable'] ?? true),
+                    (bool) ($fieldMapping['unique'] ?? false),
+                    null,
+                    false,
+                    null,
+                    $specialAppointment,
+                    $tableAttributeType,
+                    null,
+                    null,
+                    null,
+                    $accessJwt
                 );
             }
 
             $this->sdk->project->entity->cruds(
-                id: $entity['id'],
-                create: true,
-                read: true,
-                update: true,
-                delete: true,
-                search: true,
-                accessJwt: $accessJwt,
+                $entity['id'],
+                true,
+                true,
+                true,
+                true,
+                true,
+                $accessJwt
             );
             $io->success("[$entityIteration / $totalEntities] Created Entity {$entityName}.");
         }
@@ -340,31 +351,29 @@ readonly class Parser
             }
 
             $this->sdk->project->entityRelation->create(
-                orientation: $orientation,
-                description: null,
-                ownerEntityId: $relationEntity['id'],
-                ownerSideCardinality: $ownerCardinality,
-                ownerSideRequired: $ownerRequired,
-                ownerSideOrphanRemoval: $relationEntityAssociationMappingInfo['orphanRemoval'] ?? false,
-                inverseEntityId: $relatedEntity['id'],
-                inverseSideCardinality: $inverseCardinality,
-                inverseSideRequired: $inverseRequired,
-                inverseSideOrphanRemoval: $relatedEntityAssociationMappingInfo['orphanRemoval'] ?? false,
-                ownerSideName: $relationEntityAssociationMappingInfo['fieldName'] ?? null,
-                inverseSideName: $relatedEntityAssociationMappingInfo['fieldName'] ?? null,
-                accessJwt: $accessJwt,
+                $orientation,
+                null,
+                $relationEntity['id'],
+                $ownerCardinality,
+                $ownerRequired,
+                $relationEntityAssociationMappingInfo['orphanRemoval'] ?? false,
+                $relatedEntity['id'],
+                $inverseCardinality,
+                $inverseRequired,
+                $relatedEntityAssociationMappingInfo['orphanRemoval'] ?? false,
+                $relationEntityAssociationMappingInfo['fieldName'] ?? null,
+                $relatedEntityAssociationMappingInfo['fieldName'] ?? null,
+                $accessJwt
             );
         }
 
         $io->success('Done create relation');
 
-        $io->success(
-            <<<MESSAGE
-                You credentials:
-                email: {$userEmail}
-                password: {$userPassword}
-                MESSAGE
-        );
+        $io->success("
+        You credentials:
+            email: {$userEmail}
+            password: {$userPassword}
+        ");
 
         return self::SUCCESS;
     }

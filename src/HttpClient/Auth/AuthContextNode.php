@@ -6,10 +6,13 @@ namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Auth;
 
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Auth\User\UserNode;
 
-readonly class AuthContextNode
+class AuthContextNode
 {
+    public $user;
+
     public function __construct(
-        public UserNode $user,
+        UserNode $user
     ) {
+        $this->user = $user;
     }
 }

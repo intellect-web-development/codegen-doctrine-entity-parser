@@ -15,6 +15,7 @@
         "symfony/serializer": "*",
         "guzzlehttp/guzzle": "*",
         "doctrine/orm": "*",
-        "symfony/uid": "*"
+        "symfony/uid": "*",
+        "ext-json": "*"
     }
 }

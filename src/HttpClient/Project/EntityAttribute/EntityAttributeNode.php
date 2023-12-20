@@ -10,11 +10,14 @@ use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\TableAttributeType;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
 use IWD\CodeGen\CodegenDoctrineEntityParser\VO\DefaultValue;
 
-readonly class EntityAttributeNode
+class EntityAttributeNode
 {
+    private $client;
+
     public function __construct(
-        private HttpSdkClient $client,
+        HttpSdkClient $client
     ) {
+        $this->client = $client;
     }
 
     public function create(
@@ -25,41 +28,42 @@ readonly class EntityAttributeNode
         ?string $description = null,
         bool $translatable = false,
         ?DefaultValue $defaultValue = null,
-        EntityAttributeSpecialAppointment $specialAppointment = EntityAttributeSpecialAppointment::None,
-        TableAttributeType $tableAttributeType = TableAttributeType::Undefined,
+        string $specialAppointment = EntityAttributeSpecialAppointment::None,
+        string $tableAttributeType = TableAttributeType::Undefined,
         string $tableAttributeName = null,
         int $tableAttributeLength = null,
         ?string $entityAttributeEnumId = null,
-        string $accessJwt = null,
+        string $accessJwt = null
     ): array {
         $entityAttribute = $this->client->post(
-            uri: '/api/admin/project/entity-attributes/create',
-            body: [
+            '/api/admin/project/entity-attributes/create',
+            [
                 'entityId' => $entityId,
                 'entityAttributeEnumId' => $entityAttributeEnumId,
-                'defaultValueExists' => $defaultValue?->isExists() ?? false,
-                'defaultValueValue' => $defaultValue?->getValue() ?? null,
+                'defaultValueExists' => $defaultValue ? $defaultValue->isExists() : false,
+                'defaultValueValue' => $defaultValue ? $defaultValue->getValue() : null,
+
                 'description' => $description,
                 'name' => $name,
                 'nullable' => $nullable,
-                'specialAppointment' => $specialAppointment->value,
+                'specialAppointment' => $specialAppointment,
                 'translatable' => $translatable,
                 'unique' => $unique,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
 
         $tableAttribute = $this->client->post(
-            uri: '/api/admin/project/table-attributes/edit',
-            body: [
+            '/api/admin/project/table-attributes/edit',
+            [
                 'id' => $entityAttribute['tableAttributeId'],
-                'type' => $tableAttributeType->value,
+                'type' => $tableAttributeType,
                 'name' => $tableAttributeName,
                 'length' => $tableAttributeLength,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
@@ -73,11 +77,11 @@ readonly class EntityAttributeNode
         string $name = 'id',
         string $description = 'Entity ID',
         string $tableAttributeName = null,
-        string $accessJwt = null,
+        string $accessJwt = null
     ): array {
         $entityAttribute = $this->client->post(
-            uri: '/api/admin/project/entity-attributes/create',
-            body: [
+            '/api/admin/project/entity-attributes/create',
+            [
                 'entityId' => $entityId,
                 'entityAttributeEnumId' => null,
                 'defaultValueExists' => false,
@@ -85,28 +89,33 @@ readonly class EntityAttributeNode
                 'description' => $description,
                 'name' => $name,
                 'nullable' => false,
-                'specialAppointment' => EntityAttributeSpecialAppointment::Identification->value,
+                'specialAppointment' => EntityAttributeSpecialAppointment::Identification,
                 'translatable' => false,
                 'unique' => true,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
 
-        $type = match ($identificationType) {
-            IdentificationType::Sequence => TableAttributeType::Integer,
-            IdentificationType::Uuid => TableAttributeType::Uuid,
-        };
+        $type = null;
+        switch ($identificationType) {
+            case IdentificationType::Sequence:
+                $type = TableAttributeType::Integer;
+                break;
+            case IdentificationType::Uuid:
+                $type = TableAttributeType::Uuid;
+                break;
+        }
 
         $tableAttribute = $this->client->post(
-            uri: '/api/admin/project/table-attributes/edit',
-            body: [
+            '/api/admin/project/table-attributes/edit',
+            [
                 'id' => $entityAttribute['tableAttributeId'],
-                'type' => $type->value,
+                'type' => $type,
                 'name' => $tableAttributeName,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
@@ -119,11 +128,11 @@ readonly class EntityAttributeNode
         string $name = 'createdAt',
         string $description = 'Entity created at',
         string $tableAttributeName = null,
-        string $accessJwt = null,
+        string $accessJwt = null
     ): array {
         $entityAttribute = $this->client->post(
-            uri: '/api/admin/project/entity-attributes/create',
-            body: [
+            '/api/admin/project/entity-attributes/create',
+            [
                 'entityId' => $entityId,
                 'entityAttributeEnumId' => null,
                 'defaultValueExists' => false,
@@ -131,23 +140,23 @@ readonly class EntityAttributeNode
                 'description' => $description,
                 'name' => $name,
                 'nullable' => false,
-                'specialAppointment' => EntityAttributeSpecialAppointment::CreatedAt->value,
+                'specialAppointment' => EntityAttributeSpecialAppointment::CreatedAt,
                 'translatable' => false,
                 'unique' => false,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
 
         $tableAttribute = $this->client->post(
-            uri: '/api/admin/project/table-attributes/edit',
-            body: [
+            '/api/admin/project/table-attributes/edit',
+            [
                 'id' => $entityAttribute['tableAttributeId'],
-                'type' => TableAttributeType::Datetime->value,
+                'type' => TableAttributeType::Datetime,
                 'name' => $tableAttributeName,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
@@ -160,11 +169,11 @@ readonly class EntityAttributeNode
         string $name = 'updatedAt',
         string $description = 'Entity updated at',
         string $tableAttributeName = null,
-        string $accessJwt = null,
+        string $accessJwt = null
     ): array {
         $entityAttribute = $this->client->post(
-            uri: '/api/admin/project/entity-attributes/create',
-            body: [
+            '/api/admin/project/entity-attributes/create',
+            [
                 'entityId' => $entityId,
                 'entityAttributeEnumId' => null,
                 'defaultValueExists' => false,
@@ -172,23 +181,23 @@ readonly class EntityAttributeNode
                 'description' => $description,
                 'name' => $name,
                 'nullable' => false,
-                'specialAppointment' => EntityAttributeSpecialAppointment::UpdatedAt->value,
+                'specialAppointment' => EntityAttributeSpecialAppointment::UpdatedAt,
                 'translatable' => false,
                 'unique' => false,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
 
         $tableAttribute = $this->client->post(
-            uri: '/api/admin/project/table-attributes/edit',
-            body: [
+            '/api/admin/project/table-attributes/edit',
+            [
                 'id' => $entityAttribute['tableAttributeId'],
-                'type' => TableAttributeType::Datetime->value,
+                'type' => TableAttributeType::Datetime,
                 'name' => $tableAttributeName,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );

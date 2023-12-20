@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\Enum;
 
-enum Cardinality: string
+class Cardinality
 {
-    case Many = 'many';
-    case One = 'one';
+    public const Many = 'many';
+    public const One = 'one';
 }

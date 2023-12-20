@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\Enum;
 
-enum IdentificationType: string
+class IdentificationType
 {
-    case Sequence = 'sequence';
-    case Uuid = 'uuid';
+    public const Sequence = 'sequence';
+    public const Uuid = 'uuid';
 }

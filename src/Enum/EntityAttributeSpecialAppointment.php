@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\Enum;
 
-enum EntityAttributeSpecialAppointment: string
+class EntityAttributeSpecialAppointment
 {
-    case None = 'none';
-    case CreatedAt = 'created_at';
-    case Email = 'email';
-    case Enum = 'enum';
-    case ExternalId = 'external_id';
-    case Identification = 'identification';
-    case Measurement = 'measurement';
-    case PasswordHash = 'password_hash';
-    case Phone = 'phone';
-    case UpdatedAt = 'updated_at';
-    case Url = 'url';
+    public const None = "none";
+    public const CreatedAt = "created_at";
+    public const Email = "email";
+    public const Enum = "enum";
+    public const ExternalId = "external_id";
+    public const Identification = "identification";
+    public const Measurement = "measurement";
+    public const PasswordHash = "password_hash";
+    public const Phone = "phone";
+    public const UpdatedAt = "updated_at";
+    public const Url = "url";
 }

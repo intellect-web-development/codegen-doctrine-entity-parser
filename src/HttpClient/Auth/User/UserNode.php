@@ -6,21 +6,24 @@ namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Auth\User;
 
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
 
-readonly class UserNode
+class UserNode
 {
+    private $client;
+
     public function __construct(
-        private HttpSdkClient $client,
+        HttpSdkClient $client
     ) {
+        $this->client = $client;
     }
 
     public function create(
         string $email,
         string $password,
-        string $name,
+        string $name
     ): array {
         return $this->client->post(
-            uri: '/api/admin/auth/users/create',
-            body: [
+            '/api/admin/auth/users/create',
+            [
                 'email' => $email,
                 'plainPassword' => $password,
                 'name' => $name,
@@ -30,14 +33,14 @@ readonly class UserNode
 
     public function getJwt(
         string $email,
-        string $password,
+        string $password
     ): array {
         return $this->client->post(
-            uri: '/api/token/authentication',
-            body: [
+            '/api/token/authentication',
+            [
                 'email' => $email,
                 'password' => $password,
-            ],
+            ]
         );
     }
 }

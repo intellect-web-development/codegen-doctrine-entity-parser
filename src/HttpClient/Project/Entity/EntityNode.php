@@ -7,11 +7,14 @@ namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Project\Entity;
 use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\IdentificationType;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
 
-readonly class EntityNode
+class EntityNode
 {
+    private $client;
+
     public function __construct(
-        private HttpSdkClient $client,
+        HttpSdkClient $client
     ) {
+        $this->client = $client;
     }
 
     public function create(
@@ -20,28 +23,28 @@ readonly class EntityNode
         string $name,
         ?string $description = null,
         ?string $tableName = null,
-        string $accessJwt = null,
+        string $accessJwt = null
     ): array {
         $entity = $this->client->post(
-            uri: '/api/admin/project/entities/create',
-            body: [
+            '/api/admin/project/entities/create',
+            [
                 'boundedContextId' => $boundedContextId,
-                'identificationType' => $identificationType->value,
+                'identificationType' => $identificationType,
                 'name' => $name,
                 'description' => $description,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );
         if (null !== $tableName) {
             $table = $this->client->post(
-                uri: '/api/admin/project/tables/edit',
-                body: [
+                '/api/admin/project/tables/edit',
+                [
                     'id' => $entity['tableId'],
                     'name' => $tableName,
                 ],
-                headers: [
+                [
                     'Authorization' => "Bearer {$accessJwt}",
                 ]
             );
@@ -57,11 +60,11 @@ readonly class EntityNode
         bool $update,
         bool $delete,
         bool $search,
-        string $accessJwt = null,
+        string $accessJwt = null
     ): array {
         return $this->client->post(
-            uri: '/api/admin/project/entities/cruds',
-            body: [
+            '/api/admin/project/entities/cruds',
+            [
                 'id' => $id,
                 'create' => $create,
                 'read' => $read,
@@ -69,7 +72,7 @@ readonly class EntityNode
                 'delete' => $delete,
                 'search' => $search,
             ],
-            headers: [
+            [
                 'Authorization' => "Bearer {$accessJwt}",
             ]
         );

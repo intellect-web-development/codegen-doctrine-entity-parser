@@ -7,11 +7,16 @@ namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Auth\AuthContextNode;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Project\ProjectContextNode;
 
-readonly class CodeGenSdk
+class CodeGenSdk
 {
+    public $auth;
+    public $project;
+
     public function __construct(
-        public AuthContextNode $auth,
-        public ProjectContextNode $project,
+        AuthContextNode $auth,
+        ProjectContextNode $project
     ) {
+        $this->project = $project;
+        $this->auth = $auth;
     }
 }

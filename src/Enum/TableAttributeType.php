@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\Enum;
 
-enum TableAttributeType: string
+class TableAttributeType
 {
-    case BigInteger = 'big_integer';
-    case Boolean = 'boolean';
-    case Date = 'date';
-    case Datetime = 'datetime';
-    case Float = 'float';
-    case Integer = 'integer';
-    case Json = 'json';
-    case String = 'string';
-    case Text = 'text';
-    case Undefined = 'undefined';
-    case UnsignedBigInteger = 'unsigned_big_integer';
-    case UnsignedInteger = 'unsigned_integer';
-    case Uuid = 'uuid';
+    public const BigInteger = 'big_integer';
+    public const Boolean = 'boolean';
+    public const Date = 'date';
+    public const Datetime = 'datetime';
+    public const Float = 'float';
+    public const Integer = 'integer';
+    public const Json = 'json';
+    public const String = 'string';
+    public const Text = 'text';
+    public const Undefined = 'undefined';
+    public const UnsignedBigInteger = 'unsigned_big_integer';
+    public const UnsignedInteger = 'unsigned_integer';
+    public const Uuid = 'uuid';
 }
