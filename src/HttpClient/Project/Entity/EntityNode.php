@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Project\Entity;
 
+use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\IdentificationType;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
-use App\Project\Domain\Entity\Enum\IdentificationType;
-use App\Project\Domain\Entity\ValueObject\EntityId;
 
 readonly class EntityNode
 {

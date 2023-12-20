@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Project\EntityAttribute;
 
+use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\EntityAttributeSpecialAppointment;
+use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\IdentificationType;
+use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\TableAttributeType;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
-use App\Project\Domain\Entity\Enum\IdentificationType;
-use App\Project\Domain\EntityAttribute\Embeddable\DefaultValue;
-use App\Project\Domain\EntityAttribute\Enum\EntityAttributeSpecialAppointment;
-use App\Project\Domain\TableAttribute\Enum\TableAttributeType;
+use IWD\CodeGen\CodegenDoctrineEntityParser\VO\DefaultValue;
 
 readonly class EntityAttributeNode
 {
@@ -67,7 +67,6 @@ readonly class EntityAttributeNode
         return $entityAttribute;
     }
 
-    //todo: переделать на http
     public function createId(
         string $entityId,
         IdentificationType $identificationType,

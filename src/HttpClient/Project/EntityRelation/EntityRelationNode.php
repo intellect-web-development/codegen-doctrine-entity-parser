@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Project\EntityRelation;
 
+use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\Cardinality;
+use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\Orientation;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
-use App\Project\Domain\EntityRelation\Enum\Cardinality;
-use App\Project\Domain\EntityRelation\Enum\Orientation;
 
 readonly class EntityRelationNode
 {
@@ -22,11 +22,11 @@ readonly class EntityRelationNode
         Cardinality $ownerSideCardinality,
         bool $ownerSideRequired,
         bool $ownerSideOrphanRemoval,
-        ?string $ownerSideName = null,
         string $inverseEntityId,
         Cardinality $inverseSideCardinality,
         bool $inverseSideRequired,
         bool $inverseSideOrphanRemoval,
+        ?string $ownerSideName = null,
         ?string $inverseSideName = null,
         string $accessJwt = null,
     ): array {
