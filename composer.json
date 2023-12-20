@@ -1,0 +1,15 @@
+{
+    "name": "development/codegen-doctrine-entity-parser",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "IWD\\CodeGen\\CodegenDoctrineEntityParser\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "alexander-erin"
+        }
+    ],
+    "require": {}
+}
