@@ -56,6 +56,7 @@ class Parser
 
             return self::FAILURE;
         }
+
         /** @var string $accessJwt */
         $accessJwt = $jwt['access'];
 
@@ -63,6 +64,7 @@ class Parser
             $project = $this->sdk->project->project->create(
                 (int) $user['id'],
                 $command->projectName,
+                null,
                 $accessJwt
             );
         } catch (Throwable $throwable) {
@@ -80,6 +82,7 @@ class Parser
             $domainModel = $this->sdk->project->domainModel->create(
                 $project['id'],
                 $command->domainModelName,
+                null,
                 $accessJwt
             );
         } catch (Throwable $throwable) {
@@ -128,6 +131,7 @@ class Parser
                 $baseBoundedContext = $this->sdk->project->boundedContext->create(
                     $domainModel['id'],
                     $command->baseBoundedContextName ?? $command->domainModelName,
+                    null,
                     $accessJwt
                 );
             } catch (Throwable $throwable) {
@@ -146,6 +150,7 @@ class Parser
                 $boundedContext = $this->sdk->project->boundedContext->create(
                     $domainModel['id'],
                     (string) $contextName,
+                    null,
                     $accessJwt
                 );
                 $contexts[$contextName]['boundedContext'] = $boundedContext;
@@ -171,6 +176,8 @@ class Parser
                 $contexts[$entityByContextHashMap[$metadata->getName()]]['boundedContext']['id'] ?? $baseBoundedContext['id'],
                 $command->entityIdentificationType,
                 $entityName,
+                null,
+                null,
                 $accessJwt
             );
             $entitiesHashMapByNamespace[$metadata->getName()] = $entity;
@@ -180,6 +187,9 @@ class Parser
             $this->sdk->project->entityAttribute->createId(
                 $entity['id'],
                 $command->entityIdentificationType,
+                null,
+                null,
+                null,
                 $accessJwt
             );
 
@@ -188,11 +198,11 @@ class Parser
                     continue;
                 }
                 if ('createdAt' === $fieldMapping['fieldName']) {
-                    $this->sdk->project->entityAttribute->createCreatedAt($entity['id'], $accessJwt);
+                    $this->sdk->project->entityAttribute->createCreatedAt($entity['id'], null, null, null, $accessJwt);
                     continue;
                 }
                 if ('updatedAt' === $fieldMapping['fieldName']) {
-                    $this->sdk->project->entityAttribute->createUpdatedAt($entity['id'], $accessJwt);
+                    $this->sdk->project->entityAttribute->createUpdatedAt($entity['id'], null, null, null, $accessJwt);
                     continue;
                 }
 

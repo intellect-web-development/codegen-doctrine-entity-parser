@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser;
 
-use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\IdentificationType;
-
 class Command
 {
     public $projectName;
@@ -18,7 +16,7 @@ class Command
     public function __construct(
         string $projectName,
         string $domainModelName,
-        IdentificationType $entityIdentificationType,
+        string $entityIdentificationType,
         ?string $baseBoundedContextName = null,
         ?string $userEmail = null,
         ?string $userPassword = null

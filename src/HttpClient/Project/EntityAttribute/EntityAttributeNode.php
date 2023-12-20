@@ -73,7 +73,7 @@ class EntityAttributeNode
 
     public function createId(
         string $entityId,
-        IdentificationType $identificationType,
+        string $identificationType,
         string $name = 'id',
         string $description = 'Entity ID',
         string $tableAttributeName = null,

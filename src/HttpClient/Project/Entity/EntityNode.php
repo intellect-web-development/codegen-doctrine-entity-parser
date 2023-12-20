@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\Project\Entity;
 
-use IWD\CodeGen\CodegenDoctrineEntityParser\Enum\IdentificationType;
 use IWD\CodeGen\CodegenDoctrineEntityParser\HttpClient\HttpSdkClient;
 
 class EntityNode
@@ -19,7 +18,7 @@ class EntityNode
 
     public function create(
         string $boundedContextId,
-        IdentificationType $identificationType,
+        string $identificationType,
         string $name,
         ?string $description = null,
         ?string $tableName = null,
