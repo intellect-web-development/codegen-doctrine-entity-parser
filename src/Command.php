@@ -14,6 +14,7 @@ class Command
     public $userPassword = null;
     /** @var array */
     public $ignorePrefixes;
+    public $needCreateCustomBoundedContexts;
 
     public function __construct(
         string $projectName,
@@ -22,6 +23,7 @@ class Command
         ?string $baseBoundedContextName = null,
         ?string $userEmail = null,
         ?string $userPassword = null,
+        bool $needCreateCustomBoundedContexts = true,
         array $ignorePrefixes = []
     ) {
         $this->userPassword = $userPassword;
@@ -31,5 +33,6 @@ class Command
         $this->domainModelName = $domainModelName;
         $this->projectName = $projectName;
         $this->ignorePrefixes = $ignorePrefixes;
+        $this->needCreateCustomBoundedContexts = $needCreateCustomBoundedContexts;
     }
 }

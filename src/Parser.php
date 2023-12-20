@@ -106,23 +106,47 @@ class Parser
         $contexts = [];
         $entityByContextHashMap = [];
 
-        foreach ($allMetadata as $item) {
-            // Получение полного идентификатора сущности
-            $entityName = $item->getName();
+        if ($command->needCreateCustomBoundedContexts) {
+            foreach ($allMetadata as $item) {
+                // Получение полного идентификатора сущности
+                $entityName = $item->getName();
 
-            // Разделение по префиксам
-            $parts = explode('\\', $entityName);
+                // Разделение по префиксам
+                $parts = explode('\\', $entityName);
 
-            // Игнорирование префиксов
-            while (count($parts) > 2 && in_array($parts[0], $command->ignorePrefixes)) {
-                array_shift($parts);
+                // Игнорирование префиксов
+                while (count($parts) > 2 && in_array($parts[0], $command->ignorePrefixes)) {
+                    array_shift($parts);
+                }
+
+                // Получение ограниченного контекста
+                $context = $parts[0];
+
+                // Разложение сущностей по ограниченным контекстам
+                $contexts[$context]['boundedContext'] = null;
+                $contexts[$context]['entityNames'][] = $entityName;
+                $entityByContextHashMap[$entityName] = $context;
             }
+            foreach ($contexts as $contextName => $entityNames) {
+                try {
+                    $boundedContext = $this->sdk->project->boundedContext->create(
+                        $domainModel['id'],
+                        (string) $contextName,
+                        null,
+                        $accessJwt
+                    );
+                    $contexts[$contextName]['boundedContext'] = $boundedContext;
+                } catch (Throwable $throwable) {
+                    $io->error('Create BoundedContext is fail, reason: ' . $throwable->getMessage());
 
-            // Получение ограниченного контекста
-            $context = $parts[0];
-
-            // Разложение сущностей по ограниченным контекстам
-            $contexts[$context][] = $entityName;
+                    return self::FAILURE;
+                }
+                $io->success(sprintf(
+                    'BoundedContext #%s "%s" was created',
+                    $boundedContext['id'],
+                    $boundedContext['name']
+                ));
+            }
         }
 
         $baseBoundedContext = null;
@@ -145,26 +169,7 @@ class Parser
                 $baseBoundedContext['name']
             ));
         }
-        foreach ($contexts as $contextName => $entityNames) {
-            try {
-                $boundedContext = $this->sdk->project->boundedContext->create(
-                    $domainModel['id'],
-                    (string) $contextName,
-                    null,
-                    $accessJwt
-                );
-                $contexts[$contextName]['boundedContext'] = $boundedContext;
-            } catch (Throwable $throwable) {
-                $io->error('Create BoundedContext is fail, reason: ' . $throwable->getMessage());
 
-                return self::FAILURE;
-            }
-            $io->success(sprintf(
-                'BoundedContext #%s "%s" was created',
-                $boundedContext['id'],
-                $boundedContext['name']
-            ));
-        }
 
         $io->success('Next start create entities');
 
