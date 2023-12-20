@@ -178,7 +178,9 @@ class Parser
             $entityName = $this->parseEntityNameFromClassMetadata($metadata);
 
             $entity = $this->sdk->project->entity->create(
-                $contexts[$entityByContextHashMap[$metadata->getName()]]['boundedContext']['id'] ?? $baseBoundedContext['id'],
+                !empty($contexts)
+                    ? $contexts[$entityByContextHashMap[$metadata->getName()]]['boundedContext']['id'] ?? $baseBoundedContext['id']
+                    : $baseBoundedContext['id'],
                 $command->entityIdentificationType,
                 $entityName,
                 null,
