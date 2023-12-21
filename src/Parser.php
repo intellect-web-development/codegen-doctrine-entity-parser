@@ -321,12 +321,12 @@ class Parser
                     $inverseCardinality = Cardinality::One;
                 }
                 if (ClassMetadataInfo::MANY_TO_ONE === $relationEntityAssociationMappingInfo['type']) {
-                    $ownerCardinality = Cardinality::Many;
-                    $inverseCardinality = Cardinality::One;
-                }
-                if (ClassMetadataInfo::ONE_TO_MANY === $relationEntityAssociationMappingInfo['type']) {
                     $ownerCardinality = Cardinality::One;
                     $inverseCardinality = Cardinality::Many;
+                }
+                if (ClassMetadataInfo::ONE_TO_MANY === $relationEntityAssociationMappingInfo['type']) {
+                    $ownerCardinality = Cardinality::Many;
+                    $inverseCardinality = Cardinality::One;
                 }
                 if (ClassMetadataInfo::MANY_TO_MANY === $relationEntityAssociationMappingInfo['type']) {
                     $ownerCardinality = Cardinality::Many;
@@ -338,12 +338,12 @@ class Parser
                     $inverseCardinality = Cardinality::One;
                 }
                 if (ClassMetadataInfo::MANY_TO_ONE === $relatedEntityAssociationMappingInfo['type']) {
-                    $ownerCardinality = Cardinality::One;
-                    $inverseCardinality = Cardinality::Many;
-                }
-                if (ClassMetadataInfo::ONE_TO_MANY === $relatedEntityAssociationMappingInfo['type']) {
                     $ownerCardinality = Cardinality::Many;
                     $inverseCardinality = Cardinality::One;
+                }
+                if (ClassMetadataInfo::ONE_TO_MANY === $relatedEntityAssociationMappingInfo['type']) {
+                    $ownerCardinality = Cardinality::One;
+                    $inverseCardinality = Cardinality::Many;
                 }
                 if (ClassMetadataInfo::MANY_TO_MANY === $relatedEntityAssociationMappingInfo['type']) {
                     $ownerCardinality = Cardinality::Many;
