@@ -321,12 +321,12 @@ class Parser
                     $inverseCardinality = Cardinality::One;
                 }
                 if (ClassMetadataInfo::MANY_TO_ONE === $relationEntityAssociationMappingInfo['type']) {
-                    $ownerCardinality = Cardinality::One;
-                    $inverseCardinality = Cardinality::Many;
-                }
-                if (ClassMetadataInfo::ONE_TO_MANY === $relationEntityAssociationMappingInfo['type']) {
                     $ownerCardinality = Cardinality::Many;
                     $inverseCardinality = Cardinality::One;
+                }
+                if (ClassMetadataInfo::ONE_TO_MANY === $relationEntityAssociationMappingInfo['type']) {
+                    $ownerCardinality = Cardinality::One;
+                    $inverseCardinality = Cardinality::Many;
                 }
                 if (ClassMetadataInfo::MANY_TO_MANY === $relationEntityAssociationMappingInfo['type']) {
                     $ownerCardinality = Cardinality::Many;
@@ -367,6 +367,10 @@ class Parser
                 $inverseRequired = isset($relatedEntityAssociationMappingInfo['joinColumns'][0]['nullable']) && !$relatedEntityAssociationMappingInfo['joinColumns'][0]['nullable'];
             }
 
+            $io->success(
+                "1: {$ownerCardinality}-to-{$inverseCardinality} [{$relationEntityMetadata->getName()},{$relatedEntityMetadata->getName()}]" . PHP_EOL .
+                "{$relationEntityAssociationMappingInfo['fieldName']},{$relatedEntityAssociationMappingInfo['fieldName']}"
+            );
             $this->sdk->project->entityRelation->create(
                 $orientation,
                 null,
@@ -378,8 +382,8 @@ class Parser
                 $inverseCardinality,
                 $inverseRequired,
                 $relatedEntityAssociationMappingInfo['orphanRemoval'] ?? false,
-                $relationEntityAssociationMappingInfo['fieldName'] ?? null,
                 $relatedEntityAssociationMappingInfo['fieldName'] ?? null,
+                $relationEntityAssociationMappingInfo['fieldName'] ?? null,
                 $accessJwt
             );
         }
